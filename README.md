@@ -1,188 +1,168 @@
 # Job Portal & Recruitment Management System
 
-A full-stack job portal built with **Django REST Framework** (backend API) and
-**React** (frontend SPA), covering three role-based modules: **Student**,
-**Recruiter**, and **Admin**.
+A full-stack web application that connects students with recruiters. Students can search and apply for jobs, recruiters can manage job openings, and administrators can manage users and company approvals.
 
----
-## 🚀 Live Links
+## Features
 
-🌐 Frontend: https://job-portal-s3wy.vercel.app
+### Student
 
-⚙️ Backend API: https://job-portal-197b.onrender.com
+* Register and log in.
+* Browse and search job openings.
+* Filter jobs by relevant criteria.
+* Apply for jobs with a cover letter and PDF resume.
+* Track application status.
+* Manage profile information.
 
-## ✅ Features
+### Recruiter
 
-- JWT-based Student & Recruiter registration/login
-- Recruiter-owned Company profiles (with admin approval workflow)
-- Job posting, editing, closing/reopening
-- Job search with filters (location, job type, keyword, skills)
-- Apply for jobs with cover letter + PDF resume upload
-- Track application status (Applied → Shortlisted → Interview → Selected/Rejected)
-- Recruiter dashboard: manage jobs & review applicants, update statuses
-- Admin dashboard: platform stats, approve companies, suspend/reinstate users
-- REST APIs for everything, built with Django REST Framework
+* Register and log in.
+* Create and manage a company profile.
+* Post, edit, and manage job openings.
+* View applicants for posted jobs.
+* Update application status.
 
-## 🛠 Tech Stack
+### Admin
 
-- **Backend:** Python, Django, Django REST Framework, SimpleJWT, django-filter
-- **Frontend:** React.js, React Router, Axios
-- **Database:** MySQL (SQLite by default for zero-setup local dev — see below)
-- **Auth:** JWT (access + refresh tokens)
-- **Tools:** Git & GitHub, Postman (for API testing)
+* View platform statistics.
+* Review and approve company profiles.
+* View and manage user accounts.
+* Suspend or reactivate users.
 
----
+## Tech Stack
 
-## 📁 Project Structure
+**Frontend:** React.js, React Router, Axios
+**Backend:** Python, Django, Django REST Framework
+**Authentication:** JSON Web Tokens (JWT)
+**Database:** SQLite / MySQL
+**Tools:** Git, GitHub, Postman
 
-```
-job_portal/
-├── backend/                 # Django + DRF API
-│   ├── job_portal/          # Project settings, urls
-│   ├── accounts/            # Custom User, StudentProfile, RecruiterProfile, auth & admin views
-│   ├── companies/           # Company model, approval workflow
-│   ├── jobs/                # Job postings, search/filter
-│   ├── applications/        # Job applications & status pipeline
+## Project Structure
+
+```text
+job-portal/
+├── backend/
+│   ├── accounts/
+│   ├── applications/
+│   ├── companies/
+│   ├── jobs/
+│   ├── job_portal/
 │   ├── manage.py
-│   ├── requirements.txt
-│   └── .env.example
+│   └── requirements.txt
 │
-└── frontend/                 # React SPA
+└── frontend/
+    ├── public/
     ├── src/
-    │   ├── api/               # axios client + endpoint functions
-    │   ├── context/           # AuthContext (JWT session, role)
-    │   ├── components/        # Navbar, ProtectedRoute, StatusPill/Pipeline
-    │   ├── pages/              # Student / Recruiter / Admin pages
-    │   └── styles/global.css
+    │   ├── api/
+    │   ├── components/
+    │   ├── context/
+    │   ├── pages/
+    │   └── styles/
     └── package.json
 ```
 
----
+## Requirements
 
-## 🚀 Backend Setup (Django)
+* Python 3.12 or a compatible version
+* Node.js and npm
+* Git
+* MySQL Server (when using MySQL)
+
+## Installation and Setup
+
+### 1. Clone the Repository
 
 ```bash
+git clone https://github.com/DipakMagadum/job-portal.git
+cd job-portal
+```
+
+### 2. Backend Setup
+
+Open a terminal and run:
+
+```powershell
 cd backend
 python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
-
+.\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
+```
 
-cp .env.example .env            # defaults to SQLite, works out of the box
+Create a `.env` file using `.env.example` as a reference. Configure the database and other environment variables before running the application.
 
+Apply migrations:
+
+```powershell
 python manage.py migrate
-python manage.py createsuperuser   # create an admin login
+```
+
+Create an administrator account:
+
+```powershell
+python manage.py createsuperuser
+```
+
+Start the backend:
+
+```powershell
 python manage.py runserver
 ```
 
-The API will be running at **http://127.0.0.1:8000/api/**.
-Django admin is at **http://127.0.0.1:8000/admin/**.
+Backend API:
 
-> The superuser you create with `createsuperuser` is a Django superuser —
-> to also make it show up correctly in the Admin dashboard's role checks,
-> set its `role` field to `ADMIN` from `/admin/` (Users → your user → Role Info).
+`http://127.0.0.1:8000/api/`
 
-### Switching to MySQL
+Django Admin:
 
-The tech stack calls for MySQL. By default the project uses SQLite so it
-runs instantly with zero setup. To switch to MySQL:
+`http://127.0.0.1:8000/admin/`
 
-```bash
-mysql -u root -p -e "CREATE DATABASE job_portal_db CHARACTER SET utf8mb4;"
-```
+### 3. Frontend Setup
 
-Edit `backend/.env`:
-```
-USE_MYSQL=True
-MYSQL_DATABASE=job_portal_db
-MYSQL_USER=root
-MYSQL_PASSWORD=yourpassword
-MYSQL_HOST=localhost
-MYSQL_PORT=3306
-```
+Open a second terminal from the project root:
 
-Then re-run migrations:
-```bash
-pip install mysqlclient   # already in requirements.txt
-python manage.py migrate
-```
-
----
-
-## 💻 Frontend Setup (React)
-
-```bash
+```powershell
 cd frontend
 npm install
 npm start
 ```
 
-The app runs at **http://localhost:3000** and talks to the API at the URL
-configured in `frontend/.env` (`REACT_APP_API_BASE_URL`, defaults to
-`http://127.0.0.1:8000/api`).
+Frontend:
 
----
+`http://localhost:3000`
 
-## 🧪 Trying it out
+Set `REACT_APP_API_BASE_URL` in the frontend `.env` file to the backend API URL.
 
-1. Start the backend (`python manage.py runserver`) and frontend (`npm start`).
-2. Go to `http://localhost:3000/register` and create a **Recruiter** account.
-3. As the recruiter, go to **Company** and create your company profile.
-4. Log in as an **Admin** (your Django superuser, with `role=ADMIN`) at
-   `/admin/companies` and approve the company.
-5. Back as the recruiter, post a job from **My Jobs → Post a job**.
-6. Register a **Student** account, browse `/jobs`, and apply.
-7. As the recruiter, open the job's **Applicants** view and move the
-   application through the pipeline (Shortlisted → Interview → Selected).
-8. The student sees the live status update on **My Applications**.
+## Application Workflow
 
----
+1. A student or recruiter registers an account.
+2. A recruiter creates a company profile.
+3. An administrator approves the company.
+4. The recruiter publishes job openings.
+5. Students browse jobs and submit applications.
+6. Recruiters review applications and update their status.
+7. Students track their application progress.
 
-## 📬 REST API Overview (for Postman)
+## API Overview
 
-Base URL: `http://127.0.0.1:8000/api`
+| Endpoint              | Purpose                           |
+| --------------------- | --------------------------------- |
+| `/api/auth/register/` | Register an account               |
+| `/api/auth/login/`    | Authenticate a user               |
+| `/api/auth/me/`       | View or update the user's profile |
+| `/api/companies/`     | Manage company profiles           |
+| `/api/jobs/`          | Browse and manage job openings    |
+| `/api/applications/`  | Manage job applications           |
 
-| Endpoint | Method | Description |
-|---|---|---|
-| `/auth/register/` | POST | Register a student or recruiter |
-| `/auth/login/` | POST | Login, returns JWT access/refresh + user info |
-| `/token/refresh/` | POST | Refresh an expired access token |
-| `/auth/me/` | GET/PATCH | View/update your own profile |
-| `/auth/resume/upload/` | POST | Upload resume PDF (student) |
-| `/auth/admin/stats/` | GET | Platform-wide stats (admin) |
-| `/auth/admin/users/` | GET | List users, filter by `?role=` (admin) |
-| `/auth/admin/users/<id>/toggle-active/` | POST | Suspend/reinstate a user (admin) |
-| `/companies/` | GET/POST | List / create companies |
-| `/companies/<id>/` | GET/PATCH | Company detail / update |
-| `/companies/<id>/approve/` | POST | Approve a company (admin) |
-| `/jobs/` | GET/POST | Search jobs (`?q=`, `?location=`, `?job_type=`) / post a job (recruiter) |
-| `/jobs/?mine=true` | GET | Recruiter's own postings |
-| `/jobs/<id>/` | GET/PATCH/DELETE | Job detail / update / close |
-| `/applications/` | GET/POST | List your applications / apply to a job |
-| `/applications/<id>/update_status/` | PATCH | Update applicant status (recruiter) |
-| `/applications/<id>/withdraw/` | POST | Withdraw an application (student) |
+Authenticated requests use a JWT access token:
 
-All authenticated requests need the header:
 `Authorization: Bearer <access_token>`
 
----
+## Database
 
-## 🔒 Roles & Permissions Summary
+The application supports SQLite for local development and MySQL through environment-based configuration.
 
-| Action | Student | Recruiter | Admin |
-|---|:---:|:---:|:---:|
-| Register/login | ✅ | ✅ | via superuser |
-| Create/manage company | — | ✅ (own) | approve any |
-| Post/edit/close jobs | — | ✅ (own) | view all |
-| Apply to jobs, upload resume | ✅ | — | — |
-| Review applicants, update status | — | ✅ (own jobs) | view all |
-| Approve companies, suspend users | — | — | ✅ |
+MySQL configuration and migrations should be completed before using MySQL as the active database.
 
----
+## Live Demo
 
-## 📝 Notes
-
-- Resumes are limited to PDF uploads (`application/pdf`, `.pdf`).
-- New companies are unapproved by default; their jobs stay hidden from
-  students until an admin approves them from `/admin/companies`.
-- Applying twice to the same job is blocked at the database and API level.
+Frontend: https://job-portal-s3wy.vercel.app
+Backend API: https://job-portal-197b.onrender.com
