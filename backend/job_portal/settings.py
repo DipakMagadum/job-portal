@@ -1,3 +1,4 @@
+
 """
 Django settings for job_portal project.
 """
@@ -7,11 +8,18 @@ from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-production-please')
+SECRET_KEY = config(
+    'SECRET_KEY',
+    default='django-insecure-change-this-in-production-please',
+)
 
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1',
+    cast=Csv(),
+)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -21,13 +29,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # third party
+    # Third-party apps
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
     'django_filters',
 
-    # local apps
+    # Local apps
     'accounts',
     'companies',
     'jobs',
@@ -68,12 +76,10 @@ WSGI_APPLICATION = 'job_portal.wsgi.application'
 
 # ---------------------------------------------------------------------------
 # Database
-# Defaults to SQLite so the project runs instantly with zero setup.
-# To use MySQL (as specified in the tech stack), set USE_MYSQL=True in .env
-# and fill in the MYSQL_* variables, then:
-#   pip install mysqlclient
-#   mysql -u root -p -e "CREATE DATABASE job_portal_db CHARACTER SET utf8mb4;"
+# USE_MYSQL=True connects to the configured MySQL-compatible database.
+# USE_MYSQL=False uses local SQLite for development.
 # ---------------------------------------------------------------------------
+
 if config('USE_MYSQL', default=False, cast=bool):
     DATABASES = {
         'default': {
@@ -83,7 +89,17 @@ if config('USE_MYSQL', default=False, cast=bool):
             'PASSWORD': config('MYSQL_PASSWORD', default=''),
             'HOST': config('MYSQL_HOST', default='localhost'),
             'PORT': config('MYSQL_PORT', default='3306'),
-            'OPTIONS': {'charset': 'utf8mb4'},
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'ssl': {
+                    'ca': str(
+                        BASE_DIR / config(
+                            'MYSQL_SSL_CA',
+                            default='isrgrootx1.pem',
+                        )
+                    ),
+                },
+            },
         }
     }
 else:
@@ -97,10 +113,30 @@ else:
 AUTH_USER_MODEL = 'accounts.User'
 
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    {
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'UserAttributeSimilarityValidator'
+        ),
+    },
+    {
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'MinimumLengthValidator'
+        ),
+    },
+    {
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'CommonPasswordValidator'
+        ),
+    },
+    {
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'NumericPasswordValidator'
+        ),
+    },
 ]
 
 LANGUAGE_CODE = 'en-us'
@@ -117,8 +153,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ---------------------------------------------------------------------------
-# REST Framework / JWT
+# Django REST Framework and JWT
 # ---------------------------------------------------------------------------
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -131,7 +168,9 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
     ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': (
+        'rest_framework.pagination.PageNumberPagination'
+    ),
     'PAGE_SIZE': 10,
 }
 
@@ -146,5 +185,10 @@ CORS_ALLOWED_ORIGINS = config(
     default='http://localhost:3000,http://127.0.0.1:3000',
     cast=Csv(),
 )
+
 CORS_ALLOW_CREDENTIALS = True
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+STATICFILES_STORAGE = (
+    'whitenoise.storage.CompressedManifestStaticFilesStorage'
+)
+
