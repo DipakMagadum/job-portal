@@ -1,40 +1,52 @@
 # Job Portal & Recruitment Management System
 
-A full-stack web application that connects students with recruiters. Students can search and apply for jobs, recruiters can manage job openings, and administrators can manage users and company approvals.
+A full-stack job portal that connects students with recruiters through a single platform. Students can explore job opportunities and track their applications, while recruiters can manage company profiles, publish job openings, and review applicants. Administrators oversee platform activity, user accounts, and company approvals.
+
+## Live Demo
+
+* **Frontend:** [Job Portal](https://job-portal-seven-kohl-20.vercel.app)
+* **Backend API:** [Django REST API](https://job-portal-backend-zq7i.onrender.com/api/jobs/)
+* **Admin Panel:** [Django Admin](https://job-portal-backend-zq7i.onrender.com/admin/)
+
+> The application is deployed using Vercel, Render, and TiDB Cloud. The backend may take a little time to respond after a period of inactivity on the free hosting plan.
 
 ## Features
 
 ### Student
 
-* Register and log in.
-* Browse and search job openings.
-* Filter jobs by relevant criteria.
+* Register and log in securely using JWT authentication.
+* Browse, search, and filter available jobs.
 * Apply for jobs with a cover letter and PDF resume.
 * Track application status.
-* Manage profile information.
+* View and update profile information.
 
 ### Recruiter
 
 * Register and log in.
-* Create and manage a company profile.
+* Create and manage company profiles.
 * Post, edit, and manage job openings.
-* View applicants for posted jobs.
-* Update application status.
+* Review applicants for posted jobs.
+* Update application statuses.
 
-### Admin
+### Administrator
 
-* View platform statistics.
+* View platform statistics through the admin dashboard.
 * Review and approve company profiles.
 * View and manage user accounts.
 * Suspend or reactivate users.
 
-## Tech Stack
+## Technology Stack
 
-**Frontend:** React.js, React Router, Axios
-**Backend:** Python, Django, Django REST Framework
-**Authentication:** JSON Web Tokens (JWT)
-**Database:** SQLite / MySQL
-**Tools:** Git, GitHub, Postman
+| Layer             | Technologies                                                |
+| ----------------- | ----------------------------------------------------------- |
+| Frontend          | React.js, React Router                                      |
+| API Communication | Axios                                                       |
+| Backend           | Python, Django, Django REST Framework                       |
+| Authentication    | JSON Web Tokens (JWT)                                       |
+| Database          | TiDB Cloud (MySQL-compatible), SQLite for local development |
+| Static Files      | WhiteNoise                                                  |
+| Deployment        | Vercel, Render                                              |
+| Development Tools | Git, GitHub, Postman                                        |
 
 ## Project Structure
 
@@ -60,14 +72,19 @@ job-portal/
     └── package.json
 ```
 
-## Requirements
+## Getting Started
 
-* Python 3.12 or a compatible version
+Follow these steps to run the project locally.
+
+### Prerequisites
+
+Make sure you have the following installed:
+
+* Python 3.12
 * Node.js and npm
 * Git
-* MySQL Server (when using MySQL)
 
-## Installation and Setup
+For local MySQL development, you will also need a MySQL-compatible database. SQLite can be used for local development without installing MySQL.
 
 ### 1. Clone the Repository
 
@@ -76,9 +93,9 @@ git clone https://github.com/DipakMagadum/job-portal.git
 cd job-portal
 ```
 
-### 2. Backend Setup
+### 2. Set Up the Backend
 
-Open a terminal and run:
+Open a terminal and navigate to the backend directory:
 
 ```powershell
 cd backend
@@ -87,82 +104,114 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-Create a `.env` file using `.env.example` as a reference. Configure the database and other environment variables before running the application.
+Create a `.env` file using `.env.example` as a reference. Configure the required environment variables for your chosen database.
 
-Apply migrations:
+Apply the database migrations:
 
 ```powershell
 python manage.py migrate
 ```
 
-Create an administrator account:
+Create an administrator account if you need access to the Django Admin panel:
 
 ```powershell
 python manage.py createsuperuser
 ```
 
-Start the backend:
+Start the development server:
 
 ```powershell
 python manage.py runserver
 ```
 
-Backend API:
+The backend will be available at:
 
-`http://127.0.0.1:8000/api/`
+`http://127.0.0.1:8000`
 
-Django Admin:
-
-`http://127.0.0.1:8000/admin/`
-
-### 3. Frontend Setup
+### 3. Set Up the Frontend
 
 Open a second terminal from the project root:
 
 ```powershell
 cd frontend
 npm install
+```
+
+Create a frontend `.env` file and configure the backend API URL:
+
+```env
+REACT_APP_API_BASE_URL=http://127.0.0.1:8000/api
+```
+
+Start the frontend development server:
+
+```powershell
 npm start
 ```
 
-Frontend:
+The frontend will be available at:
 
 `http://localhost:3000`
 
-Set `REACT_APP_API_BASE_URL` in the frontend `.env` file to the backend API URL.
+## API Endpoints
+
+The backend exposes REST API endpoints for authentication and the main application features.
+
+| Endpoint              | Purpose                                   |
+| --------------------- | ----------------------------------------- |
+| `/api/auth/`          | Authentication and account-related routes |
+| `/api/companies/`     | Company profile operations                |
+| `/api/jobs/`          | Job listing and management                |
+| `/api/applications/`  | Job application operations                |
+| `/api/token/refresh/` | Refresh JWT access tokens                 |
+
+The exact operations available at each endpoint depend on the configured Django URL routes and permissions.
+
+### Authentication
+
+Authenticated API requests use a JWT access token in the request header:
+
+```http
+Authorization: Bearer <access_token>
+```
 
 ## Application Workflow
 
-1. A student or recruiter registers an account.
-2. A recruiter creates a company profile.
-3. An administrator approves the company.
-4. The recruiter publishes job openings.
-5. Students browse jobs and submit applications.
-6. Recruiters review applications and update their status.
-7. Students track their application progress.
+1. Students and recruiters register for an account.
+2. Recruiters create company profiles.
+3. Administrators review company profiles for approval.
+4. Approved recruiters publish job openings.
+5. Students browse available jobs and submit applications.
+6. Recruiters review applications and update their statuses.
+7. Students track the progress of their applications.
 
-## API Overview
+## Database Configuration
 
-| Endpoint              | Purpose                           |
-| --------------------- | --------------------------------- |
-| `/api/auth/register/` | Register an account               |
-| `/api/auth/login/`    | Authenticate a user               |
-| `/api/auth/me/`       | View or update the user's profile |
-| `/api/companies/`     | Manage company profiles           |
-| `/api/jobs/`          | Browse and manage job openings    |
-| `/api/applications/`  | Manage job applications           |
+The project supports SQLite for local development and MySQL-compatible databases through environment-based configuration.
 
-Authenticated requests use a JWT access token:
+The deployed application uses TiDB Cloud, which provides a MySQL-compatible database service.
 
-`Authorization: Bearer <access_token>`
+Before deploying to a different environment, configure the database connection and apply all required Django migrations.
 
-## Database
+**Security:** Keep database credentials, Django secret keys, and other sensitive configuration in environment variables. Never commit `.env` files or production secrets to GitHub.
 
-The application supports SQLite for local development and MySQL through environment-based configuration.
+## Deployment
 
-MySQL configuration and migrations should be completed before using MySQL as the active database.
+The application is deployed as separate frontend and backend services:
 
-## Live Demo
+* **Frontend:** Vercel
+* **Backend:** Render
+* **Database:** TiDB Cloud
 
-Frontend: https://job-portal-s3wy.vercel.app
-Backend API: https://job-portal-197b.onrender.com
+The frontend uses `REACT_APP_API_BASE_URL` to communicate with the backend API. Configure the production API URL in the frontend hosting environment and allow the deployed frontend origin in Django's CORS settings.
+
+## Future Improvements
+
+* Add automated tests for authentication, job management, and applications.
+* Improve error handling and form validation.
+* Add pagination and advanced job filters.
+* Expand deployment monitoring and API documentation.
+
+---
+
+Built as a full-stack project to practise frontend development, REST API integration, authentication, database management, and deployment.
